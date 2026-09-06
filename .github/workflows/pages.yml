@@ -19,45 +19,13 @@ jobs:
     runs-on: ubuntu-24.04
     timeout-minutes: 10
     permissions:
-      contents: write
+      contents: read
       pages: read
     steps:
       - name: Check out repository
         uses: actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803 # v6
-      - name: Restore verified source archive
-        id: source
-        if: hashFiles('package.json') == '' && github.event_name != 'pull_request'
-        shell: bash
-        run: |
-          python3 - <<'PY'
-          import base64, hashlib, io, os, tarfile
-          from pathlib import Path, PurePosixPath
-          parts = sorted(Path('.bootstrap').glob('source-*.b64'))
-          if len(parts) != 8:
-              raise SystemExit('Expected exactly eight source archive segments')
-          data = b''.join(base64.b64decode(p.read_bytes(), validate=True) for p in parts)
-          expected = '34eac59caf4d624f754ca2824a72d937cfccfe83818801e39d54340ae86feed6'
-          if len(data) != 64916 or hashlib.sha256(data).hexdigest() != expected:
-              raise SystemExit('Source archive checksum mismatch')
-          with tarfile.open(fileobj=io.BytesIO(data), mode='r:xz') as archive:
-              members = archive.getmembers()
-              if len(members) != 26 or sum(m.size for m in members) > 5_000_000:
-                  raise SystemExit('Unexpected archive contents')
-              for member in members:
-                  path = PurePosixPath(member.name)
-                  if (not member.isfile() or path.is_absolute() or not path.parts
-                          or '..' in path.parts or path.parts[0] in {'.git', '.github', '.bootstrap'}
-                          or member.size > 1_000_000):
-                      raise SystemExit(f'Unsafe archive member: {member.name}')
-              for member in members:
-                  path = Path(member.name)
-                  path.parent.mkdir(parents=True, exist_ok=True)
-                  with archive.extractfile(member) as stream:
-                      path.write_bytes(stream.read())
-          with open(os.environ['GITHUB_OUTPUT'], 'a') as output:
-              output.write('restored=true\n')
-          print('Restored 26 source files; SHA-256 verified')
-          PY
+        with:
+          persist-credentials: false
       - name: Set up Node.js
         uses: actions/setup-node@249970729cb0ef3589644e2896645e5dc5ba9c38 # v6
         with:
@@ -66,16 +34,9 @@ jobs:
       - name: Run core tests
         run: npm test
       - name: Build browser distributions
-        run: npm run build:pages
-      - name: Commit expanded and verified source
-        if: steps.source.outputs.restored == 'true'
         run: |
-          git config user.name 'github-actions[bot]'
-          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
-          rm -rf .bootstrap
-          git add --all
-          git commit -m 'feat: add Lithic Sculpt engine, workspace, tests and Pages build'
-          git push origin HEAD:main
+          npm run build:pages
+          node --input-type=module -e "import {writeFileSync} from 'node:fs'; writeFileSync('_site/build-info.json', JSON.stringify({commit: process.env.GITHUB_SHA, run: process.env.GITHUB_RUN_ID}) + '\n');"
       - name: Configure GitHub Pages
         if: github.event_name != 'pull_request' && github.ref == 'refs/heads/main'
         uses: actions/configure-pages@983d7736d9b0ae728b81ab479565c72886d7745b # v5
@@ -101,3 +62,42 @@ jobs:
       - name: Deploy to GitHub Pages
         id: deployment
         uses: actions/deploy-pages@d6db90164ac5ed86f2b6aed7e0febac5b3c0c03e # v4
+      - name: Verify live deployment and browser assets
+        env:
+          PAGE_URL: ${{ steps.deployment.outputs.page_url }}
+        shell: bash
+        run: |
+          python3 - <<'PY'
+          import json, os, time, urllib.request
+          base = os.environ['PAGE_URL'].rstrip('/') + '/'
+          commit = os.environ['GITHUB_SHA']
+          def read(path):
+              request = urllib.request.Request(base + path + '?build=' + commit,
+                  headers={'Cache-Control': 'no-cache', 'User-Agent': 'LithicSculpt-Pages-Check'})
+              with urllib.request.urlopen(request, timeout=30) as response:
+                  if response.status != 200:
+                      raise RuntimeError(f'{path}: HTTP {response.status}')
+                  return response.read()
+          for attempt in range(12):
+              try:
+                  deployed = json.loads(read('build-info.json'))
+                  if deployed['commit'] != commit:
+                      raise RuntimeError('Pages is still serving a previous commit')
+                  break
+              except Exception:
+                  if attempt == 11:
+                      raise
+                  time.sleep(5)
+          assets = ['', 'style.css', 'src/app.js', 'src/render.js', 'src/sculpt.js',
+                    'src/mesh.js', 'src/math.js', 'src/io.js', 'src/model.js',
+                    'src/topology.js', 'src/worker.js', 'dist/lithic-sculpt.html',
+                    'tests/gpu-smoke.html', 'tests/gpu-smoke.js']
+          for path in assets:
+              content = read(path)
+              if not content:
+                  raise RuntimeError(f'Empty deployed asset: {path}')
+              if path in {'', 'dist/lithic-sculpt.html'} and b'<title>Lithic Sculpt' not in content:
+                  raise RuntimeError(f'Unexpected application HTML: {path}')
+              print(f'HTTP 200: {path or "index.html"} ({len(content)} bytes)')
+          print(f'Verified deployment of {commit}: {base}')
+          PY
