@@ -1,0 +1,146 @@
+
+> lithic-sculpt@1.0.0 test
+> node --test tests/*.test.mjs
+
+TAP version 13
+# Subtest: icosphere has compact manifold adjacency and outward unit normals
+ok 1 - icosphere has compact manifold adjacency and outward unit normals
+  ---
+  duration_ms: 18.314073
+  type: 'test'
+  ...
+# Subtest: input validation rejects non-finite positions and invalid indices
+ok 2 - input validation rejects non-finite positions and invalid indices
+  ---
+  duration_ms: 0.557713
+  type: 'test'
+  ...
+# Subtest: BVH ray queries agree with brute-force triangle intersection
+ok 3 - BVH ray queries agree with brute-force triangle intersection
+  ---
+  duration_ms: 9.529322
+  type: 'test'
+  ...
+# Subtest: spatial hash remains exact after localized vertex relocation
+ok 4 - spatial hash remains exact after localized vertex relocation
+  ---
+  duration_ms: 10.245131
+  type: 'test'
+  ...
+# Subtest: draw, clay, smooth, inflate, pinch, flatten, grab and mask have distinct real effects
+ok 5 - draw, clay, smooth, inflate, pinch, flatten, grab and mask have distinct real effects
+  ---
+  duration_ms: 48.341579
+  type: 'test'
+  ...
+# Subtest: fully masked positions are invariant under every geometric brush
+ok 6 - fully masked positions are invariant under every geometric brush
+  ---
+  duration_ms: 3.46421
+  type: 'test'
+  ...
+# Subtest: zero pressure produces no displacement, and draw pressure is linear
+ok 7 - zero pressure produces no displacement, and draw pressure is linear
+  ---
+  duration_ms: 4.805543
+  type: 'test'
+  ...
+# Subtest: brush falloff has bounded monotonic support and fixed endpoints
+ok 8 - brush falloff has bounded monotonic support and fixed endpoints
+  ---
+  duration_ms: 0.214129
+  type: 'test'
+  ...
+# Subtest: symmetry unions shared vertices without double-applying the center seam
+ok 9 - symmetry unions shared vertices without double-applying the center seam
+  ---
+  duration_ms: 6.155528
+  type: 'test'
+  ...
+# Subtest: connected patch does not leak onto a nearby disconnected shell
+ok 10 - connected patch does not leak onto a nearby disconnected shell
+  ---
+  duration_ms: 3.175329
+  type: 'test'
+  ...
+# Subtest: sparse stroke undo/redo restores exact float32 positions and masks
+ok 11 - sparse stroke undo/redo restores exact float32 positions and masks
+  ---
+  duration_ms: 8.609419
+  type: 'test'
+  ...
+# Subtest: Loop subdivision preserves topology and affine stencil sums
+ok 12 - Loop subdivision preserves topology and affine stencil sums
+  ---
+  duration_ms: 9.014835
+  type: 'test'
+  ...
+# Subtest: coarse-level edits prolongate while retaining high-level detail, with exact undo
+ok 13 - coarse-level edits prolongate while retaining high-level detail, with exact undo
+  ---
+  duration_ms: 21.85625
+  type: 'test'
+  ...
+# Subtest: history honors byte budget and invalidates redo on branching edits
+ok 14 - history honors byte budget and invalidates redo on branching edits
+  ---
+  duration_ms: 0.314149
+  type: 'test'
+  ...
+# Subtest: SDF remeshing creates a closed surface approximating the input sphere
+ok 15 - SDF remeshing creates a closed surface approximating the input sphere
+  ---
+  duration_ms: 132.743639
+  type: 'test'
+  ...
+# Subtest: open surfaces are rejected by closed-surface remeshing
+ok 16 - open surfaces are rejected by closed-surface remeshing
+  ---
+  duration_ms: 0.432635
+  type: 'test'
+  ...
+# Subtest: OBJ importer supports negative indices and concave polygon triangulation
+ok 17 - OBJ importer supports negative indices and concave polygon triangulation
+  ---
+  duration_ms: 0.955356
+  type: 'test'
+  ...
+# Subtest: OBJ geometry round-trip preserves vertex and face counts
+ok 18 - OBJ geometry round-trip preserves vertex and face counts
+  ---
+  duration_ms: 248.886657
+  type: 'test'
+  ...
+# Subtest: embedded glTF and GLB round-trip exact geometry for multiple objects
+ok 19 - embedded glTF and GLB round-trip exact geometry for multiple objects
+  ---
+  duration_ms: 6.566962
+  type: 'test'
+  ...
+# Subtest: project round-trip preserves masks, IDs, levels, and stencils
+ok 20 - project round-trip preserves masks, IDs, levels, and stencils
+  ---
+  duration_ms: 9.932985
+  type: 'test'
+  ...
+# Subtest: malformed project stencil references are rejected
+ok 21 - malformed project stencil references are rejected
+  ---
+  duration_ms: 2.181607
+  type: 'test'
+  ...
+# Subtest: torus primitive is manifold with outward-facing normals
+ok 22 - torus primitive is manifold with outward-facing normals
+  ---
+  duration_ms: 22.935361
+  type: 'test'
+  ...
+1..22
+# tests 22
+# suites 0
+# pass 22
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 651.908536

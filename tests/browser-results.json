@@ -1,0 +1,97 @@
+{
+  "backend": "WebGL2",
+  "browser": "144.0.7559.96",
+  "environment": "Chromium SwiftShader / about:blank; IndexedDB and WebGPU unavailable on this test origin",
+  "passed": 22,
+  "failed": 0,
+  "results": [
+    {
+      "test": "Seven editable starter objects; renderer initialized",
+      "passed": true
+    },
+    {
+      "test": "Pointer drag changes actual vertex coordinates",
+      "passed": true
+    },
+    {
+      "test": "Keyboard undo restores vertex and mask values exactly",
+      "passed": true
+    },
+    {
+      "test": "Keyboard redo restores deformation exactly",
+      "passed": true
+    },
+    {
+      "test": "Mask pointer dab paints vertex mask values",
+      "passed": true
+    },
+    {
+      "test": "Mask-all prevents geometric deformation",
+      "passed": true
+    },
+    {
+      "test": "Mask clear removes protection",
+      "passed": true
+    },
+    {
+      "test": "Material selection changes scene state",
+      "passed": true
+    },
+    {
+      "test": "Wireframe toggle renders without errors",
+      "passed": true
+    },
+    {
+      "test": "Right-drag orbits camera",
+      "passed": true
+    },
+    {
+      "test": "Adding a primitive creates a separate sculpt object",
+      "passed": true
+    },
+    {
+      "test": "Undo removes added object",
+      "passed": true
+    },
+    {
+      "test": "Redo reinstates added object",
+      "passed": true
+    },
+    {
+      "test": "Standalone Blob worker performs Loop subdivision",
+      "passed": true
+    },
+    {
+      "test": "Subdivision down selects retained coarse mesh",
+      "passed": true
+    },
+    {
+      "test": "Subdivision up selects retained detail mesh",
+      "passed": true
+    },
+    {
+      "test": "Standalone remesh worker returns closed real geometry",
+      "passed": true
+    },
+    {
+      "test": "Undo remeshing restores subdivision hierarchy",
+      "passed": true
+    },
+    {
+      "test": "Save generates complete editable project download",
+      "passed": true
+    },
+    {
+      "test": "Project input restores objects and clears session history",
+      "passed": true
+    },
+    {
+      "test": "Mobile viewport keeps a usable rendering surface",
+      "passed": true
+    },
+    {
+      "test": "No uncaught browser exceptions",
+      "passed": true
+    }
+  ]
+}
